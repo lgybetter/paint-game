@@ -13,7 +13,8 @@ module.exports = {
   resolve: {
     extensions:['','.js','.vue'],
      alias: {
-      'vue$': 'vue/dist/vue.js'
+      'vue$': 'vue/dist/vue.js',
+      'muse-components': 'muse-ui/src'
     }
   },
   module: {
@@ -27,12 +28,20 @@ module.exports = {
         loader: 'babel'
       },
       {
-        test:/\.scss$/,
-        loaders: ["style", "css", "sass"]
+        test: /\.css$/, 
+        loader: 'style!css'
+      },
+      {
+        test: /\.less$/, 
+        loader: 'style!css!less'
       },
       {
         test:   /\.(png|jpg|gif|svg|ico)$/,
         loader: 'url-loader?limit=8192',
+      },
+      {
+        test: /muse-ui.src.*?js$/,
+        loader: 'babel'
       }
     ]
   },
