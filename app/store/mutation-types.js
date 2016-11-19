@@ -1,2 +1,8 @@
 export const USER_ENTER = 'AUTH_ENTER'
 export const USER_LEFT = 'AUTH_LEFT'
+export const CANVAS_INIT = 'CANVAS_INIT'
+export const DRAW_BEGIN = 'DRAW_BEGIN'
+export const DRAWING = 'DRAWING'
+export const DRAWLINE = 'DRAWLINE'
+export const GET_MOUSE_POS = 'GET_MOUSE_POS'
+export const GET_TOUCH_POS = 'GET_TOUCH_POS'
