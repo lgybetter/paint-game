@@ -9,7 +9,7 @@ const mutations = {
     sessionStorage.setItem('user', JSON.stringify(user))
     state.user = user
   },
-  [types.USER_LEFT](state) {
+  [types.USER_EXIT](state) {
     sessionStorage.removeItem('user')
     state.user = {}
   }

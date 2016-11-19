@@ -4,6 +4,7 @@ const state = {
   canvas: null,
   ctx: null,
   drawing: false,
+  
   mousePos: {
     x: 0,
     y: 0
@@ -15,8 +16,10 @@ const state = {
 }
 
 const mutations = {
-  [types.CANVAS_INIT](state) {
-    state.canvas = document.getElementById('canvas')
+  [types.DRAW_CANVAS_INIT](state, el) {
+    state.canvas = document.getElementById(el)
+    state.canvas.width = window.screen.availWidth / window.screen.availHeight < 1 ? window.screen.availWidth * 0.8 : window.screen.availWidth * 0.6
+    state.canvas.height = window.screen.availWidth / window.screen.availHeight < 1 ? window.screen.availHeight * 0.35 : window.screen.availHeight * 0.4
     state.ctx = state.canvas.getContext('2d')
     var rect = state.canvas.getBoundingClientRect();
     // Prevent scrolling when touching the canvas
@@ -51,6 +54,10 @@ const mutations = {
       state.ctx.lineWidth = 1.0
       state.ctx.strokeStyle = '#CC0000'
       state.ctx.stroke()
+      // this.$socket.emit('drawer_mouse_down', {
+      //   lastPos: state.lastPos,
+      //   mousePos: state.mousePos
+      // })
       state.lastPos = state.mousePos
     }, false)
     state.canvas.addEventListener('mouseup', (e) => {
@@ -68,6 +75,10 @@ const mutations = {
         state.ctx.lineWidth = 1.0
         state.ctx.strokeStyle = '#CC0000'
         state.ctx.stroke()
+        // this.$socket.emit('drawer_mouse_move', {
+        //   lastPos: state.lastPos,
+        //   mousePos: state.mousePos
+        // })
         state.lastPos = state.mousePos
       }
     }, false)

@@ -3,7 +3,8 @@ import Vuex from 'vuex'
 import * as actions from './actions'
 import * as getters from './getters'
 import user from './modules/user'
-import canvas from './modules/canvas'
+import drawCanvas from './modules/drawCanvas'
+import showCanvas from './modules/showCanvas'
 
 Vue.use(Vuex)
 
@@ -12,6 +13,7 @@ export default new Vuex.Store({
   getters,
   modules: {
     user,
-    canvas
+    drawCanvas,
+    showCanvas
   }
 })

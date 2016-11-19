@@ -7,12 +7,12 @@ const router = new VueRouter({
   routes: [
     {
       name: 'home',
-      path: '/',
+      path: '/home',
       component: homePage
     },
     {
       name: 'userEnter',
-      path: '/enter',
+      path: '/',
       component: userEnterPage
     }
   ]
