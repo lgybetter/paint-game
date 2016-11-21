@@ -4,9 +4,11 @@
     <div class="page-content">
       <div class="page-content-wrapper">
         <div class="center-box">
-          <canvas id="canvas" class="canvas"></canvas>
-          <canvas id="show-canvas" class="canvas"></canvas>
+          <canvas v-show="drawerState" id="canvas" class="canvas"></canvas>
+          <canvas v-show="!drawerState" id="show-canvas" class="canvas"></canvas>
         </div>
+        <snackbar v-if="snackbar" :message="message" action="关闭" @actionClick="hideSnackbar" @close="hideSnackbar" />
+        <raisedButton label="开始游戏" primary fullWidth v-on:click="startGame"/>
       </div>
     </div>
   </div>
@@ -14,6 +16,10 @@
 
 <script>
 import navgation from '../components/navgation'
+import badge from 'muse-components/badge'
+import raisedButton from 'muse-components/raisedButton'
+import chip from 'muse-components/chip'
+import snackbar  from 'muse-components/snackbar'
 import * as types from '../store/mutation-types'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -21,17 +27,44 @@ export default {
   computed: mapGetters({
     mousePos: 'mousePos',
     lastPos: 'lastPos',
-    drawing: 'drawFlag'
+    drawerState: 'drawerState',
+    drawing: 'drawFlag',
+    userName: 'userName',
+    usersNumber: 'usersNumber',
+    newUserName: 'newUserName'
   }),
+  data() {
+    return {
+      snackbar: false,
+      message: '',
+      test: false
+    }
+  },
   components: {
-    navgation
+    navgation,
+    raisedButton,
+    snackbar,
+    badge,
+    chip
   },
   methods: {
-
+    showSnackbar () {
+      this.message = this.newUserName + "玩家加入游戏"
+      this.snackbar = true
+      if (this.snackTimer) clearTimeout(this.snackTimer)
+      this.snackTimer = setTimeout(() => { this.snackbar = false }, 5000)
+    },
+    hideSnackbar () {
+      this.snackbar = false
+      if (this.snackTimer) clearTimeout(this.snackTimer)
+    },
+    startGame() {
+      this.$socket.emit('start_game')
+    }
   },
   mounted() {
-    this.$store.commit(types.DRAW_CANVAS_INIT, 'canvas')
-    this.$store.commit(types.SHOW_CANVAS_INIT, 'show-canvas')
+      this.$store.commit(types.DRAW_CANVAS_INIT, 'canvas')
+      this.$store.commit(types.SHOW_CANVAS_INIT, 'show-canvas')
   },
   watch: {
     mousePos: function() {
@@ -39,6 +72,9 @@ export default {
         lastPos: this.lastPos,
         mousePos: this.mousePos
       })
+    },
+    usersNumber: function() {
+      this.showSnackbar()
     }
   }
 }
@@ -57,8 +93,9 @@ export default {
         margin: 0 auto;
         text-align: center;
         .canvas {
-          border: 1px solid black;
-          background: white;
+          border-radius: 4px;
+          box-shadow: rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px;
+          background: #fff9c4;
         }
       }
     }

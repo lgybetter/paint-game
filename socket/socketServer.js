@@ -8,7 +8,10 @@ class socketServer {
   ioListen() {
     this.io.on('connection', (socket) => {
       var addUser = false
-
+      socket.on('start_game', () => {
+        socket.emit('set_drawer')
+        socket.broadcast.emit('set_shower')
+      })
       socket.on('disconnect', () => {
         if (addUser) {
           this.usersNumber--

@@ -4,7 +4,6 @@ const state = {
   canvas: null,
   ctx: null,
   drawing: false,
-  
   mousePos: {
     x: 0,
     y: 0
