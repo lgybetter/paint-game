@@ -43,6 +43,9 @@ const mutations = {
     state.ctx.strokeStyle = '#CC0000'
     state.ctx.stroke()
     state.lastPos = state.mousePos
+  },
+  [types.CLEAR_SHOW_CANVAS](state) {
+    state.ctx.clearRect(0, 0, state.canvas.width, state.canvas.height)
   }
 }
 

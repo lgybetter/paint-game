@@ -12,6 +12,9 @@ class socketServer {
         socket.emit('set_drawer')
         socket.broadcast.emit('set_shower')
       })
+      socket.on('clear_canvas', () => {
+        socket.broadcast.emit('shower_clear_canvas')
+      })
       socket.on('disconnect', () => {
         if (addUser) {
           this.usersNumber--

@@ -1,6 +1,6 @@
 import * as types from '../store/mutation-types'
 
-export default function (store) {
+export default function (store, router) {
   return {
     connect: () => {
       console.log('socket connected')
@@ -22,11 +22,23 @@ export default function (store) {
     },
     set_drawer: (data) => {
       console.log("set_drawer")
-      store.commit(types.SET_DRAWER)
+      router.replace({path: '/room'})
+      // store.commit(types.DRAW_CANVAS_INIT)
+      // store.commit(types.SHOW_CANVAS_INIT)
+      // store.commit(types.CLEAR_CANVAS)
+      store.commit(types.SET_DRAWER) 
     },
     set_shower: (data) => {
       console.log("set_shower")
+      router.replace({path: '/room'})
+      // store.commit(types.DRAW_CANVAS_INIT)
+      // store.commit(types.SHOW_CANVAS_INIT)
+      // store.commit(types.CLEAR_CANVAS)
       store.commit(types.SET_SHOWER)
+    },
+    shower_clear_canvas: (data) => {
+      console.log("shower_clear_canvas")
+      store.commit(types.CLEAR_SHOW_CANVAS)
     }
   }
 }

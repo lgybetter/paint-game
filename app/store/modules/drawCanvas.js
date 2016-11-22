@@ -106,6 +106,9 @@ const mutations = {
       })
       state.canvas.dispatchEvent(mouseEvent)
     }, false)
+  },
+  [types.CLEAR_DRAW_CANVAS](state) {
+    state.ctx.clearRect(0, 0, state.canvas.width, state.canvas.height)
   }
 }
 

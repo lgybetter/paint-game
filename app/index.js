@@ -13,7 +13,7 @@ Vue.use(VueSocketio, 'http://localhost:3000')
 Vue.use(VueRouter)
 
 new Vue({
-  sockets: socketEvent(store),
+  sockets: socketEvent(store, router),
   router,
   store,
   render: h => h(app)
