@@ -6,8 +6,8 @@
         <list>
           <subHeader>玩家座位</subheader>
           <divider/>
-          <template v-for="user in usersSit">
-            <listItem :title="user.userName" v-on:click="test(user.userId)">
+          <template v-for="user in seat">
+            <listItem :title="user.userName" v-on:click="sit(user)">
               <avatar src="./js/20cfec7259143037b09641a814e3f0c3.jpg" slot="leftAvatar"/>
               <icon slot="right" value="star_border">
             </listitem>
@@ -40,10 +40,10 @@ export default {
     userName: 'userName',
     usersNumber: 'usersNumber',
     newUserName: 'newUserName',
-    usersSit: 'usersSit'
+    seat: 'seat'
   }),
   created() {
-    this.$store.commit(types.USER_SIT_INIT)
+    this.$store.commit(types.SEAT_INIT)
   },
   data() {
     return {
@@ -64,7 +64,9 @@ export default {
     listItem
   },
   methods: {
-    test(user) {
+    sit(user) {
+      user.userName = this.userName
+      this.$store.commit(types.USER_SIT, { user })
       console.log(user)
     },
     showSnackbar (message) {
@@ -79,7 +81,6 @@ export default {
     },
     startGame() {
       this.$socket.emit('start_game')
-      console.log(this.usersSit)
     },
   },
   watch: {
