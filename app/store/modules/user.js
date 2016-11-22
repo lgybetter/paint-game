@@ -4,6 +4,7 @@ const state = {
   userName: JSON.parse(sessionStorage.getItem('user')) || {},
   newUserName: '',
   usersNumber: 0,
+  usersSit: [],
   drawerState: true
 }
 
@@ -26,6 +27,20 @@ const mutations = {
   },
   [types.SET_SHOWER](state) {
     state.drawerState = false
+  },
+  [types.USER_SIT_INIT](state) {
+    for(let i = 0; i < 6; i++ ){
+      state.usersSit[i] = {
+        userName: '',
+        userId: i
+      }
+    }
+  },
+  [types.NEW_USER_SIT](state, { user }) {
+    state.usersSit[user.id] = {
+      userName: user.userName,
+      userId: user.id
+    }
   }
 }
 

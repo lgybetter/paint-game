@@ -3,6 +3,18 @@
     <navgation></navgation>
     <div class="page-content">
       <div class="page-content-wrapper">
+        <list>
+          <subHeader>玩家座位</subheader>
+          <divider/>
+          <template v-for="user in usersSit">
+            <listItem :title="user.userName" v-on:click="test(user.userId)">
+              <avatar src="./js/20cfec7259143037b09641a814e3f0c3.jpg" slot="leftAvatar"/>
+              <icon slot="right" value="star_border">
+            </listitem>
+            <divider/>
+          </template>
+          <divider/>
+        </list>
         <snackbar v-if="snackbar" :message="message" action="关闭" @actionClick="hideSnackbar" @close="hideSnackbar" />
         <raisedButton label="开始游戏" primary fullWidth v-on:click="startGame"/>
       </div>
@@ -12,8 +24,14 @@
 
 <script>
 import navgation from '../components/navgation'
+import avatar_1 from '../../public/assets/images/avatar_1.jpg'
+import avatar from 'muse-components/avatar'
+import icon from 'muse-components/icon'
 import raisedButton from 'muse-components/raisedButton'
 import snackbar  from 'muse-components/snackbar'
+import subHeader from 'muse-components/subHeader'
+import divider from 'muse-components/divider'
+import { list, listItem } from 'muse-components/list'
 import * as types from '../store/mutation-types'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -21,20 +39,34 @@ export default {
   computed: mapGetters({
     userName: 'userName',
     usersNumber: 'usersNumber',
-    newUserName: 'newUserName'
+    newUserName: 'newUserName',
+    usersSit: 'usersSit'
   }),
+  created() {
+    this.$store.commit(types.USER_SIT_INIT)
+  },
   data() {
     return {
       snackbar: false,
       message: '',
+      avatar_1,
     }
   },
   components: {
+    avatar,
+    icon,
     navgation,
     raisedButton,
     snackbar,
+    subHeader,
+    divider,
+    list,
+    listItem
   },
   methods: {
+    test(user) {
+      console.log(user)
+    },
     showSnackbar (message) {
       this.message = message
       this.snackbar = true
@@ -47,6 +79,7 @@ export default {
     },
     startGame() {
       this.$socket.emit('start_game')
+      console.log(this.usersSit)
     },
   },
   watch: {

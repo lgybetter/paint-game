@@ -3,6 +3,7 @@ import socketIo from 'socket.io'
 class socketServer {
   constructor(http) {
     this.usersNumber = 0
+    this.usersOnline = []
     this.io = socketIo(http)
   }
   ioListen() {
@@ -34,7 +35,6 @@ class socketServer {
       })
 
       socket.on('user_enter', (userName) => {
-        console.log('user enter')
         if (addUser)
           return
         socket.userName = userName
@@ -47,6 +47,15 @@ class socketServer {
         socket.broadcast.emit('new_user_join', {
           userName: socket.userName,
           usersNumber: this.usersNumber
+        })
+      })
+      
+      socket.on('sit_room', (user) => {
+        socket.id = user.id
+        this.usersOnline[user.id] = socket
+        socket.broadcast.emit('new_user_sit', {
+          userName: socket.userName,
+          userId: socket.id
         })
       })
     })

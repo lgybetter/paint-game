@@ -3,7 +3,7 @@
     <div class="page-content">
       <div class="page-content-wrapper">
         <textFieldLabel labelFloat label="请输入你的昵称" type="text" v-model="userName" fullWidth/>
-        <raisedButton label="进入游戏" primary fullWidth v-on:click="test"/>
+        <raisedButton label="进入游戏" primary fullWidth v-on:click="test" />
       </div>
     </div>
   </div>

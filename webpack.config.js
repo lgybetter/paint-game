@@ -42,6 +42,10 @@ module.exports = {
       {
         test: /muse-ui.src.*?js$/,
         loader: 'babel'
+      },
+      {
+        test: /\.(png|jpg|gif|svg|ico)$/,
+        loader: 'file'
       }
     ]
   },
