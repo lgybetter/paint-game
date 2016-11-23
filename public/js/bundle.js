@@ -12787,10 +12787,9 @@
 	    listItem: _list.listItem
 	  },
 	  methods: {
-	    sit: function sit(user) {
+	    sit: function sit(index, user) {
 	      user.userName = this.userName;
-	      this.$store.commit(types.USER_SIT, { user: user });
-	      console.log(user);
+	      this.$store.commit(types.USER_SIT, { index: index, user: user });
 	    },
 	    showSnackbar: function showSnackbar(message) {
 	      var _this = this;
@@ -18745,14 +18744,14 @@
 	    staticClass: "page-content"
 	  }, [_vm._h('div', {
 	    staticClass: "page-content-wrapper"
-	  }, [_vm._h('list', [_vm._h('subHeader', ["玩家座位"]), " ", _vm._h('divider'), " ", _vm._l((_vm.seat), function(user) {
+	  }, [_vm._h('list', [_vm._h('subHeader', ["玩家座位"]), " ", _vm._h('divider'), " ", _vm._l((_vm.seat), function(user, index) {
 	    return [_vm._h('listItem', {
 	      attrs: {
 	        "title": user.userName
 	      },
 	      on: {
 	        "click": function($event) {
-	          _vm.sit(user)
+	          _vm.sit(index, user)
 	        }
 	      }
 	    }, [_vm._h('avatar', {
@@ -20786,38 +20785,38 @@
 	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
 	var state = {
-	  seat: new Array()
+	  seat: new Array(),
+	  seatLastId: -1
 	};
 	
 	var mutations = (_mutations = {}, _defineProperty(_mutations, types.SEAT_INIT, function (state) {
 	  for (var i = 0; i < 6; i++) {
 	    state.seat[i] = {
 	      userName: '',
-	      seatId: i
+	      seatState: true
 	    };
 	  }
 	}), _defineProperty(_mutations, types.USER_SIT, function (state, _ref) {
-	  var user = _ref.user;
+	  var index = _ref.index,
+	      user = _ref.user;
 	
 	  var seat2 = new Array();
 	  for (var i = 0; i < 6; i++) {
-	    if (i == user.seatId) {
-	      seat2[i] = {
-	        userName: user.userName,
-	        seatId: user.seatId
-	      };
-	    } else {
-	      seat2[i] = {
-	        userName: state.seat[i].userName,
-	        seatId: state.seat[i].seatId
-	      };
-	    }
+	    seat2[i] = state.seat[i];
 	  }
+	  seat2[index] = {
+	    userName: user.userName,
+	    seatState: true
+	  };
+	  if (state.seatLastId !== -1 && state.seatLastId !== index) {
+	    seat2[state.seatLastId] = {
+	      userName: '',
+	      seatState: true
+	    };
+	  }
+	  console.log();
+	  state.seatLastId = index;
 	  state.seat = seat2;
-	  // state.seat[user.seatId] = {
-	  //   userName: user.userName,
-	  //   seatId: user.seatId
-	  // }
 	}), _mutations);
 	
 	exports.default = {

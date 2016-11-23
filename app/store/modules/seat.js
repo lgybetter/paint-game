@@ -1,7 +1,8 @@
 import * as types from '../mutation-types'
 
 const state = {
-  seat: new Array
+  seat: new Array,
+  seatLastId: -1
 }
 
 const mutations = {
@@ -9,30 +10,28 @@ const mutations = {
     for (let i = 0; i < 6; i++) {
       state.seat[i] = {
         userName: '',
-        seatId: i
+        seatState: true
       }
     }
   },
-  [types.USER_SIT](state, { user }) {
+  [types.USER_SIT](state, { index, user}) {
     var seat2 = new Array
     for (let i = 0; i < 6; i++) {
-      if (i == user.seatId) {
-        seat2[i] = {
-          userName: user.userName,
-          seatId: user.seatId
-        }
-      } else {
-        seat2[i] = {
-          userName: state.seat[i].userName,
-          seatId: state.seat[i].seatId
-        }
-      }
+      seat2[i] = state.seat[i]
     }
+    seat2[index] = {
+      userName: user.userName,
+      seatState: true
+    }
+    if(state.seatLastId !== -1 && state.seatLastId !== index) {
+      seat2[state.seatLastId] = {
+        userName: '',
+        seatState: true
+      }
+    } 
+    console.log()
+    state.seatLastId = index
     state.seat = seat2
-    // state.seat[user.seatId] = {
-    //   userName: user.userName,
-    //   seatId: user.seatId
-    // }
   }
 }
 

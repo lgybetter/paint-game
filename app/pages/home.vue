@@ -6,8 +6,8 @@
         <list>
           <subHeader>玩家座位</subheader>
           <divider/>
-          <template v-for="user in seat">
-            <listItem :title="user.userName" v-on:click="sit(user)">
+          <template v-for="(user, index) in seat">
+            <listItem :title="user.userName" v-on:click="sit(index, user)">
               <avatar src="./js/20cfec7259143037b09641a814e3f0c3.jpg" slot="leftAvatar"/>
               <icon slot="right" value="star_border">
             </listitem>
@@ -64,10 +64,9 @@ export default {
     listItem
   },
   methods: {
-    sit(user) {
+    sit(index, user) {
       user.userName = this.userName
-      this.$store.commit(types.USER_SIT, { user })
-      console.log(user)
+      this.$store.commit(types.USER_SIT, { index, user })
     },
     showSnackbar (message) {
       this.message = message
