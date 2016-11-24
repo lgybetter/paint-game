@@ -6,3 +6,4 @@ export const newUserName = state => state.user.newUserName
 export const usersNumber = state => state.user.usersNumber
 export const drawerState = state => state.user.drawerState
 export const seat = state => state.seat.seat
+export const seatLastId = state => state.seat.seatLastId

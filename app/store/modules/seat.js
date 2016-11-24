@@ -21,16 +21,32 @@ const mutations = {
     }
     seat2[index] = {
       userName: user.userName,
-      seatState: true
+      seatState: user.seatState
     }
     if(state.seatLastId !== -1 && state.seatLastId !== index) {
       seat2[state.seatLastId] = {
         userName: '',
         seatState: true
       }
-    } 
-    console.log()
+    }
     state.seatLastId = index
+    state.seat = seat2
+  },
+  [types.NEW_USER_SIT](state, { index, user, seatLastId }) {
+    var seat2 = new Array
+    for(let i = 0; i < 6; i++) {
+      seat2[i] = state.seat[i]
+    }
+    seat2[index] = {
+      userName: user.userName,
+      seatState: user.seatState
+    }
+    if(seatLastId !== -1 && seatLastId !== index) {
+      seat2[seatLastId] = {
+        userName: '',
+        seatState: true
+      }
+    }
     state.seat = seat2
   }
 }

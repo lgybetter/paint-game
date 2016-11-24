@@ -58,6 +58,13 @@ class socketServer {
           userId: socket.id
         })
       })
+      
+      socket.on('user_sit', ({ index, user, seatLastId }) => {
+        socket.id = index
+        this.usersOnline[index] = socket
+        this.usersOnline[seatLastId] = null
+        socket.broadcast.emit('new_user_sit', { index, user, seatLastId })
+      })
     })
   }
 }

@@ -12762,7 +12762,8 @@
 	    userName: 'userName',
 	    usersNumber: 'usersNumber',
 	    newUserName: 'newUserName',
-	    seat: 'seat'
+	    seat: 'seat',
+	    seatLastId: 'seatLastId'
 	  }),
 	  created: function created() {
 	    this.$store.commit(types.SEAT_INIT);
@@ -12788,17 +12789,24 @@
 	  },
 	  methods: {
 	    sit: function sit(index, user) {
+	      var _this = this;
+	
 	      user.userName = this.userName;
-	      this.$store.commit(types.USER_SIT, { index: index, user: user });
+	      user.seatState = false;
+	      setTimeout(function () {
+	        var seatLastId = _this.seatLastId;
+	        _this.$socket.emit('user_sit', { index: index, user: user, seatLastId: seatLastId });
+	        _this.$store.commit(types.USER_SIT, { index: index, user: user });
+	      }, 100);
 	    },
 	    showSnackbar: function showSnackbar(message) {
-	      var _this = this;
+	      var _this2 = this;
 	
 	      this.message = message;
 	      this.snackbar = true;
 	      if (this.snackTimer) clearTimeout(this.snackTimer);
 	      this.snackTimer = setTimeout(function () {
-	        _this.snackbar = false;
+	        _this2.snackbar = false;
 	      }, 5000);
 	    },
 	    hideSnackbar: function hideSnackbar() {
@@ -12815,6 +12823,11 @@
 	    }
 	  }
 	}; //
+	//
+	//
+	//
+	//
+	//
 	//
 	//
 	//
@@ -18734,6 +18747,7 @@
 	var CLEAR_SHOW_CANVAS = exports.CLEAR_SHOW_CANVAS = 'CLEAR_SHOW_CANVAS';
 	var SEAT_INIT = exports.SEAT_INIT = 'SEAT_INIT';
 	var USER_SIT = exports.USER_SIT = 'USER_SIT';
+	var NEW_USER_SIT = exports.NEW_USER_SIT = 'NEW_USER_SIT';
 
 /***/ },
 /* 211 */
@@ -18747,7 +18761,8 @@
 	  }, [_vm._h('list', [_vm._h('subHeader', ["玩家座位"]), " ", _vm._h('divider'), " ", _vm._l((_vm.seat), function(user, index) {
 	    return [_vm._h('listItem', {
 	      attrs: {
-	        "title": user.userName
+	        "title": user.userName,
+	        "disabled": !user.seatState
 	      },
 	      on: {
 	        "click": function($event) {
@@ -18759,12 +18774,17 @@
 	      attrs: {
 	        "src": "./js/20cfec7259143037b09641a814e3f0c3.jpg"
 	      }
-	    }), " ", _vm._h('icon', {
+	    }), " ", (user.seatState) ? [_vm._h('icon', {
 	      slot: "right",
 	      attrs: {
 	        "value": "star_border"
 	      }
-	    })]), " ", _vm._h('divider')]
+	    })] : [_vm._h('icon', {
+	      slot: "right",
+	      attrs: {
+	        "value": "star"
+	      }
+	    })], " "]), " ", _vm._h('divider')]
 	  }), " ", _vm._h('divider')]), " ", (_vm.snackbar) ? _vm._h('snackbar', {
 	    attrs: {
 	      "message": _vm.message,
@@ -20713,6 +20733,9 @@
 	var seat = exports.seat = function seat(state) {
 	  return state.seat.seat;
 	};
+	var seatLastId = exports.seatLastId = function seatLastId(state) {
+	  return state.seat.seatLastId;
+	};
 
 /***/ },
 /* 256 */
@@ -20806,7 +20829,7 @@
 	  }
 	  seat2[index] = {
 	    userName: user.userName,
-	    seatState: true
+	    seatState: user.seatState
 	  };
 	  if (state.seatLastId !== -1 && state.seatLastId !== index) {
 	    seat2[state.seatLastId] = {
@@ -20814,8 +20837,27 @@
 	      seatState: true
 	    };
 	  }
-	  console.log();
 	  state.seatLastId = index;
+	  state.seat = seat2;
+	}), _defineProperty(_mutations, types.NEW_USER_SIT, function (state, _ref2) {
+	  var index = _ref2.index,
+	      user = _ref2.user,
+	      seatLastId = _ref2.seatLastId;
+	
+	  var seat2 = new Array();
+	  for (var i = 0; i < 6; i++) {
+	    seat2[i] = state.seat[i];
+	  }
+	  seat2[index] = {
+	    userName: user.userName,
+	    seatState: user.seatState
+	  };
+	  if (seatLastId !== -1 && seatLastId !== index) {
+	    seat2[seatLastId] = {
+	      userName: '',
+	      seatState: true
+	    };
+	  }
 	  state.seat = seat2;
 	}), _mutations);
 	
@@ -21060,7 +21102,6 @@
 	      store.commit(types.SHOW_MOUSE_MOVE, { mousePos: data.mousePos });
 	    },
 	    set_drawer: function set_drawer(data) {
-	      console.log("set_drawer");
 	      router.replace({ path: '/room' });
 	      // store.commit(types.DRAW_CANVAS_INIT)
 	      // store.commit(types.SHOW_CANVAS_INIT)
@@ -21068,7 +21109,6 @@
 	      store.commit(types.SET_DRAWER);
 	    },
 	    set_shower: function set_shower(data) {
-	      console.log("set_shower");
 	      router.replace({ path: '/room' });
 	      // store.commit(types.DRAW_CANVAS_INIT)
 	      // store.commit(types.SHOW_CANVAS_INIT)
@@ -21076,8 +21116,14 @@
 	      store.commit(types.SET_SHOWER);
 	    },
 	    shower_clear_canvas: function shower_clear_canvas(data) {
-	      console.log("shower_clear_canvas");
 	      store.commit(types.CLEAR_SHOW_CANVAS);
+	    },
+	    new_user_sit: function new_user_sit(_ref) {
+	      var index = _ref.index,
+	          user = _ref.user,
+	          seatLastId = _ref.seatLastId;
+	
+	      store.commit(types.NEW_USER_SIT, { index: index, user: user, seatLastId: seatLastId });
 	    }
 	  };
 	};

@@ -7,16 +7,21 @@
           <subHeader>玩家座位</subheader>
           <divider/>
           <template v-for="(user, index) in seat">
-            <listItem :title="user.userName" v-on:click="sit(index, user)">
-              <avatar src="./js/20cfec7259143037b09641a814e3f0c3.jpg" slot="leftAvatar"/>
-              <icon slot="right" value="star_border">
+            <listItem :title="user.userName" v-on:click="sit(index, user)" :disabled="!user.seatState">
+              <avatar src="./js/20cfec7259143037b09641a814e3f0c3.jpg" slot="leftAvatar" />
+              <template v-if="user.seatState">
+                <icon slot="right" value="star_border" />
+              </template>
+              <template v-else>
+                <icon slot="right" value="star" />
+              </template>
             </listitem>
             <divider/>
           </template>
           <divider/>
         </list>
         <snackbar v-if="snackbar" :message="message" action="关闭" @actionClick="hideSnackbar" @close="hideSnackbar" />
-        <raisedButton label="开始游戏" primary fullWidth v-on:click="startGame"/>
+        <raisedButton label="开始游戏" primary fullWidth v-on:click="startGame" />
       </div>
     </div>
   </div>
@@ -40,7 +45,8 @@ export default {
     userName: 'userName',
     usersNumber: 'usersNumber',
     newUserName: 'newUserName',
-    seat: 'seat'
+    seat: 'seat',
+    seatLastId: 'seatLastId'
   }),
   created() {
     this.$store.commit(types.SEAT_INIT)
@@ -49,7 +55,7 @@ export default {
     return {
       snackbar: false,
       message: '',
-      avatar_1,
+      avatar_1
     }
   },
   components: {
@@ -66,7 +72,12 @@ export default {
   methods: {
     sit(index, user) {
       user.userName = this.userName
-      this.$store.commit(types.USER_SIT, { index, user })
+      user.seatState = false
+      setTimeout(() => {
+        var seatLastId = this.seatLastId
+        this.$socket.emit('user_sit', { index, user, seatLastId})
+        this.$store.commit(types.USER_SIT, { index, user })
+      }, 100)
     },
     showSnackbar (message) {
       this.message = message
