@@ -23,17 +23,17 @@ const mutations = {
     var rect = state.canvas.getBoundingClientRect();
     // Prevent scrolling when touching the canvas
     document.body.addEventListener("touchstart", function (e) {
-      if (e.target == canvas) {
+      if (e.target == state.canvas) {
         e.preventDefault();
       }
     }, false);
     document.body.addEventListener("touchend", function (e) {
-      if (e.target == canvas) {
+      if (e.target == state.canvas) {
         e.preventDefault();
       }
     }, false);
     document.body.addEventListener("touchmove", function (e) {
-      if (e.target == canvas) {
+      if (e.target == state.canvas) {
         e.preventDefault();
       }
     }, false);

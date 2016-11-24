@@ -2,7 +2,8 @@ import * as types from '../mutation-types'
 
 const state = {
   seat: new Array,
-  seatLastId: -1
+  seatLastId: -1,
+  curSeatId: 0
 }
 
 const mutations = {
@@ -16,6 +17,8 @@ const mutations = {
   },
   [types.USER_SIT](state, { index, user}) {
     var seat2 = new Array
+    state.curSeatId = index
+    console.log(state.curSeatId)
     for (let i = 0; i < 6; i++) {
       seat2[i] = state.seat[i]
     }

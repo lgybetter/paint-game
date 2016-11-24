@@ -4,15 +4,12 @@
     <div class="page-content">
       <div class="page-content-wrapper">
         <div class="center-box">
-          <template v-if="drawerState">
-            <canvas id="canvas" class="canvas"></canvas>
-          </template>
-          <template v-else>
-            <canvas v-show="!drawerState" id="show-canvas" class="canvas"></canvas>
-          </template>
+          <canvas v-show="drawerState" id="canvas" class="canvas"></canvas>
+          <canvas v-show="!drawerState" id="show-canvas" class="canvas"></canvas>
         </div>
+        <raisedButton label="绘画结束" primary fullWidth v-on:click="changeDrawer" />
         <snackbar v-if="snackbar" :message="message" action="关闭" @actionClick="hideSnackbar" @close="hideSnackbar" />
-        <floatButton v-show="drawerState" mini secondary icon="clear" class="float-button" v-on:click="clearCanvas"/>
+        <floatButton v-show="drawerState" mini secondary icon="clear" class="float-button" v-on:click="clearCanvas" />
       </div>
     </div>
   </div>
@@ -22,6 +19,7 @@
 import navgation from '../components/navgation'
 import floatButton from 'muse-components/floatButton'
 import snackbar  from 'muse-components/snackbar'
+import raisedButton from 'muse-components/raisedButton'
 import * as types from '../store/mutation-types'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -32,6 +30,7 @@ export default {
     drawerState: 'drawerState',
     drawing: 'drawFlag',
     userName: 'userName',
+    curSeatId: 'curSeatId'
   }),
   data() {
     return {
@@ -42,7 +41,8 @@ export default {
   components: {
     navgation,
     snackbar,
-    floatButton
+    floatButton,
+    raisedButton
   },
   methods: {
     showSnackbar (message) {
@@ -58,13 +58,18 @@ export default {
     clearCanvas() {
       this.$store.commit(types.CLEAR_DRAW_CANVAS)
       this.$socket.emit('clear_canvas')
+    },
+    changeDrawer() {
+      console.log(1)
+      this.$socket.emit('change_drawer', this.curSeatId)
     }
   },
+  created() {
+    console.log(this.drawerState)
+  },
   mounted() {
-    if(this.drawerState) 
-      this.$store.commit(types.DRAW_CANVAS_INIT, 'canvas')
-    else
-      this.$store.commit(types.SHOW_CANVAS_INIT, 'show-canvas')
+    this.$store.commit(types.DRAW_CANVAS_INIT, 'canvas')
+    this.$store.commit(types.SHOW_CANVAS_INIT, 'show-canvas')
   },
   watch: {
     mousePos: function() {
@@ -75,6 +80,7 @@ export default {
     },
     drawerState: function() {
       this.showSnackbar("玩家开始绘画")
+      console.log(this.drawerState)
     }
   }
 }

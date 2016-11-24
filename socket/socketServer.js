@@ -13,6 +13,22 @@ class socketServer {
         socket.emit('set_drawer')
         socket.broadcast.emit('set_shower')
       })
+      socket.on('change_drawer', (id) => {
+        socket.emit('set_shower')
+        var flag = true
+        for (let i = 0; i < 6; i++) {
+          if (this.usersOnline[i] != null) {
+            if (i > id && flag) {
+              this.usersOnline[i].emit('set_drawer')
+              this.usersOnline[i].emit('shower_clear_canvas')
+              flag = false
+            } else {
+              this.usersOnline[i].emit('set_shower')
+              this.usersOnline[i].emit('shower_clear_canvas')
+            }
+          }
+        }
+      })
       socket.on('clear_canvas', () => {
         socket.broadcast.emit('shower_clear_canvas')
       })
@@ -49,20 +65,11 @@ class socketServer {
           usersNumber: this.usersNumber
         })
       })
-      
-      socket.on('sit_room', (user) => {
-        socket.id = user.id
-        this.usersOnline[user.id] = socket
-        socket.broadcast.emit('new_user_sit', {
-          userName: socket.userName,
-          userId: socket.id
-        })
-      })
-      
+
       socket.on('user_sit', ({ index, user, seatLastId }) => {
-        socket.id = index
         this.usersOnline[index] = socket
-        this.usersOnline[seatLastId] = null
+        if (index !== seatLastId && seatLastId !== -1)
+          this.usersOnline[seatLastId] = null
         socket.broadcast.emit('new_user_sit', { index, user, seatLastId })
       })
     })

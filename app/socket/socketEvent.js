@@ -22,16 +22,10 @@ export default function (store, router) {
     },
     set_drawer: (data) => {
       router.replace({ path: '/room' })
-      // store.commit(types.DRAW_CANVAS_INIT)
-      // store.commit(types.SHOW_CANVAS_INIT)
-      // store.commit(types.CLEAR_CANVAS)
       store.commit(types.SET_DRAWER)
     },
     set_shower: (data) => {
       router.replace({ path: '/room' })
-      // store.commit(types.DRAW_CANVAS_INIT)
-      // store.commit(types.SHOW_CANVAS_INIT)
-      // store.commit(types.CLEAR_CANVAS)
       store.commit(types.SET_SHOWER)
     },
     shower_clear_canvas: (data) => {

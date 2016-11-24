@@ -20187,6 +20187,10 @@
 	
 	var _snackbar2 = _interopRequireDefault(_snackbar);
 	
+	var _raisedButton = __webpack_require__(179);
+	
+	var _raisedButton2 = _interopRequireDefault(_raisedButton);
+	
 	var _mutationTypes = __webpack_require__(210);
 	
 	var types = _interopRequireWildcard(_mutationTypes);
@@ -20197,13 +20201,32 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	//
+	
 	exports.default = {
 	  computed: (0, _vuex.mapGetters)({
 	    mousePos: 'mousePos',
 	    lastPos: 'lastPos',
 	    drawerState: 'drawerState',
 	    drawing: 'drawFlag',
-	    userName: 'userName'
+	    userName: 'userName',
+	    curSeatId: 'curSeatId'
 	  }),
 	  data: function data() {
 	    return {
@@ -20215,7 +20238,8 @@
 	  components: {
 	    navgation: _navgation2.default,
 	    snackbar: _snackbar2.default,
-	    floatButton: _floatButton2.default
+	    floatButton: _floatButton2.default,
+	    raisedButton: _raisedButton2.default
 	  },
 	  methods: {
 	    showSnackbar: function showSnackbar(message) {
@@ -20235,10 +20259,18 @@
 	    clearCanvas: function clearCanvas() {
 	      this.$store.commit(types.CLEAR_DRAW_CANVAS);
 	      this.$socket.emit('clear_canvas');
+	    },
+	    changeDrawer: function changeDrawer() {
+	      console.log(1);
+	      this.$socket.emit('change_drawer', this.curSeatId);
 	    }
 	  },
+	  created: function created() {
+	    console.log(this.drawerState);
+	  },
 	  mounted: function mounted() {
-	    if (this.drawerState) this.$store.commit(types.DRAW_CANVAS_INIT, 'canvas');else this.$store.commit(types.SHOW_CANVAS_INIT, 'show-canvas');
+	    this.$store.commit(types.DRAW_CANVAS_INIT, 'canvas');
+	    this.$store.commit(types.SHOW_CANVAS_INIT, 'show-canvas');
 	  },
 	
 	  watch: {
@@ -20250,28 +20282,10 @@
 	    },
 	    drawerState: function drawerState() {
 	      this.showSnackbar("玩家开始绘画");
+	      console.log(this.drawerState);
 	    }
 	  }
-	}; //
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
-	//
+	};
 
 /***/ },
 /* 245 */
@@ -20530,7 +20544,18 @@
 	    staticClass: "page-content-wrapper"
 	  }, [_vm._h('div', {
 	    staticClass: "center-box"
-	  }, [(_vm.drawerState) ? [_vm._m(0)] : [_vm._h('canvas', {
+	  }, [_vm._h('canvas', {
+	    directives: [{
+	      name: "show",
+	      rawName: "v-show",
+	      value: (_vm.drawerState),
+	      expression: "drawerState"
+	    }],
+	    staticClass: "canvas",
+	    attrs: {
+	      "id": "canvas"
+	    }
+	  }), " ", _vm._h('canvas', {
 	    directives: [{
 	      name: "show",
 	      rawName: "v-show",
@@ -20541,7 +20566,16 @@
 	    attrs: {
 	      "id": "show-canvas"
 	    }
-	  })], " "]), " ", (_vm.snackbar) ? _vm._h('snackbar', {
+	  })]), " ", _vm._h('raisedButton', {
+	    attrs: {
+	      "label": "绘画结束",
+	      "primary": "",
+	      "fullWidth": ""
+	    },
+	    on: {
+	      "click": _vm.changeDrawer
+	    }
+	  }), " ", (_vm.snackbar) ? _vm._h('snackbar', {
 	    attrs: {
 	      "message": _vm.message,
 	      "action": "关闭"
@@ -20567,14 +20601,7 @@
 	      "click": _vm.clearCanvas
 	    }
 	  })])])])
-	},staticRenderFns: [function (){var _vm=this;
-	  return _vm._h('canvas', {
-	    staticClass: "canvas",
-	    attrs: {
-	      "id": "canvas"
-	    }
-	  })
-	}]}
+	},staticRenderFns: []}
 	if (false) {
 	  module.hot.accept()
 	  if (module.hot.data) {
@@ -20736,6 +20763,9 @@
 	var seatLastId = exports.seatLastId = function seatLastId(state) {
 	  return state.seat.seatLastId;
 	};
+	var curSeatId = exports.curSeatId = function curSeatId(state) {
+	  return state.seat.curSeatId;
+	};
 
 /***/ },
 /* 256 */
@@ -20809,7 +20839,8 @@
 	
 	var state = {
 	  seat: new Array(),
-	  seatLastId: -1
+	  seatLastId: -1,
+	  curSeatId: 0
 	};
 	
 	var mutations = (_mutations = {}, _defineProperty(_mutations, types.SEAT_INIT, function (state) {
@@ -20824,6 +20855,8 @@
 	      user = _ref.user;
 	
 	  var seat2 = new Array();
+	  state.curSeatId = index;
+	  console.log(state.curSeatId);
 	  for (var i = 0; i < 6; i++) {
 	    seat2[i] = state.seat[i];
 	  }
@@ -20908,17 +20941,17 @@
 	  var rect = state.canvas.getBoundingClientRect();
 	  // Prevent scrolling when touching the canvas
 	  document.body.addEventListener("touchstart", function (e) {
-	    if (e.target == canvas) {
+	    if (e.target == state.canvas) {
 	      e.preventDefault();
 	    }
 	  }, false);
 	  document.body.addEventListener("touchend", function (e) {
-	    if (e.target == canvas) {
+	    if (e.target == state.canvas) {
 	      e.preventDefault();
 	    }
 	  }, false);
 	  document.body.addEventListener("touchmove", function (e) {
-	    if (e.target == canvas) {
+	    if (e.target == state.canvas) {
 	      e.preventDefault();
 	    }
 	  }, false);
@@ -21103,16 +21136,10 @@
 	    },
 	    set_drawer: function set_drawer(data) {
 	      router.replace({ path: '/room' });
-	      // store.commit(types.DRAW_CANVAS_INIT)
-	      // store.commit(types.SHOW_CANVAS_INIT)
-	      // store.commit(types.CLEAR_CANVAS)
 	      store.commit(types.SET_DRAWER);
 	    },
 	    set_shower: function set_shower(data) {
 	      router.replace({ path: '/room' });
-	      // store.commit(types.DRAW_CANVAS_INIT)
-	      // store.commit(types.SHOW_CANVAS_INIT)
-	      // store.commit(types.CLEAR_CANVAS)
 	      store.commit(types.SET_SHOWER);
 	    },
 	    shower_clear_canvas: function shower_clear_canvas(data) {

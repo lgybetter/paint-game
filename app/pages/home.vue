@@ -91,7 +91,7 @@ export default {
     },
     startGame() {
       this.$socket.emit('start_game')
-    },
+    }
   },
   watch: {
     usersNumber: function() {
