@@ -21,7 +21,7 @@
           <divider/>
         </list>
         <snackbar v-if="snackbar" :message="message" action="关闭" @actionClick="hideSnackbar" @close="hideSnackbar" />
-        <raisedButton label="开始游戏" primary fullWidth v-on:click="startGame" />
+        <raisedButton v-show="curSeatId==0" label="开始游戏" primary fullWidth v-on:click="startGame" />
       </div>
     </div>
   </div>
@@ -46,7 +46,8 @@ export default {
     usersNumber: 'usersNumber',
     newUserName: 'newUserName',
     seat: 'seat',
-    seatLastId: 'seatLastId'
+    seatLastId: 'seatLastId',
+    curSeatId: 'curSeatId'
   }),
   created() {
     this.$store.commit(types.SEAT_INIT)

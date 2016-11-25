@@ -7,7 +7,15 @@
           <canvas v-show="drawerState" id="canvas" class="canvas"></canvas>
           <canvas v-show="!drawerState" id="show-canvas" class="canvas"></canvas>
         </div>
-        <raisedButton label="绘画结束" primary fullWidth v-on:click="changeDrawer" />
+        <slider v-show="drawerState" v-model="paintThick" :step="1" :max="10" :min="0" class="canvas-slider"/>
+        <selectField v-show="drawerState" v-model="paintColor" label="选择画笔的颜色">
+          <selectItem value="black" title="黑色"/>
+          <selectItem value="red" title="红色"/>
+          <selectItem value="blue" title="蓝色"/>
+          <selectItem value="green" title="绿色"/>
+        </selectfield>
+        <textFieldLabel v-show="!drawerState" labelFloat :label="tip" type="text" v-model="answer" fullWidth/>
+        <raisedButton v-show="!drawerState" label="发送" primary fullWidth v-on:click="changeDrawer" />
         <snackbar v-if="snackbar" :message="message" action="关闭" @actionClick="hideSnackbar" @close="hideSnackbar" />
         <floatButton v-show="drawerState" mini secondary icon="clear" class="float-button" v-on:click="clearCanvas" />
       </div>
@@ -19,7 +27,11 @@
 import navgation from '../components/navgation'
 import floatButton from 'muse-components/floatButton'
 import snackbar  from 'muse-components/snackbar'
+import slider from 'muse-components/slider'
+import selectField from 'muse-components/selectField'
+import textFieldLabel from 'muse-components/textField'
 import raisedButton from 'muse-components/raisedButton'
+import selectItem from 'muse-components/menu/menuItem'
 import * as types from '../store/mutation-types'
 import { mapGetters, mapActions } from 'vuex'
 
@@ -36,13 +48,21 @@ export default {
     return {
       snackbar: false,
       message: '',
+      answer: '',
+      tip: '提示: 3个字',
+      paintThick: 0,
+      paintColor: 'red'
     }
   },
   components: {
     navgation,
     snackbar,
     floatButton,
-    raisedButton
+    raisedButton,
+    textFieldLabel,
+    slider,
+    selectField,
+    selectItem
   },
   methods: {
     showSnackbar (message) {
@@ -103,6 +123,9 @@ export default {
           box-shadow: rgba(0, 0, 0, 0.156863) 0px 3px 10px, rgba(0, 0, 0, 0.227451) 0px 3px 10px;
           background: #fff9c4;
         }
+      }
+      .canvas-slider {
+        margin-top: 16px;
       }
       .float-button {
         position: fixed;

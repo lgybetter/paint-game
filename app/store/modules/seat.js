@@ -3,7 +3,7 @@ import * as types from '../mutation-types'
 const state = {
   seat: new Array,
   seatLastId: -1,
-  curSeatId: 0
+  curSeatId: -1
 }
 
 const mutations = {
